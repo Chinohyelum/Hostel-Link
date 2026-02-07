@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+</head>
+
+<body>
+
+  <!-- TOP NAV -->
+  <header class="dash-topbar">
+    <!-- LEFT: hamburger + brand -->
+    <div class="dash-left">
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+        ☰
+      </button>
+      <span class="dash-brand">HostelLink</span>
+    </div>
+
+    <!-- CENTER: logout -->
+    <div class="dash-center">
+      <a class="logout-btn" href="{{ url_for('student.student_logout') }}">Logout</a>
+
+    </div>
+
+    <!-- RIGHT: profile icon -->
+    <div class="dash-right">
+
+        <a class="notif-icon" href="{{ url_for('student.notifications_page') }}" title="Notifications">
+        🔔
+            {% if notification_count > 0 %}
+            <span class="notif-badge">{{ notification_count }}</span>
+            {% endif %}
+         </a>
+
+    <!-- Profile Icon -->
+
+      <a class="profile-icon" href="{{ url_for('student.profile_page') }}" title="Edit Profile">
+        {% if student and student['profile_pic'] %}
+          <img src="{{ url_for('static', filename='uploads/' ~ student['profile_pic']) }}" alt="Profile">
+        {% else %}
+          <span class="profile-fallback">👤</span>
+        {% endif %}
+      </a>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="dash-sidebar" id="sidebar" aria-hidden="true">
+    <div class="sidebar-header">
+      <h3>Menu</h3>
+      <button class="sidebar-close" id="closeSidebarBtn" aria-label="Close menu">✕</button>
+    </div>
+
+    <!-- <nav class="sidebar-links">
+      <a href="{{ url_for('student.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('student.book_hostel_page') }}">Book Hostel</a>
+      <a href="{{ url_for('student.booking_history') }}">Booking History</a>
+      <a href="{{ url_for('student.cancel_booking_page') }}">Cancellation Request</a>
+      <a href="{{ url_for('student.swap_request_page') }}">Swap Request</a>
+      <a href="{{ url_for('student.roommates_page') }}">My Roommates</a>
+      <a href="{{ url_for('student.hostel_card_page') }}">Print Hostel Card</a>
+      <a href="{{ url_for('student.ratings_page') }}">Ratings</a>
+      <a href="{{ url_for('student.profile_page') }}">Edit Profile</a>
+    </nav> -->
+  </aside>
+
+  <!-- OVERLAY -->
+  <div class="dash-overlay" id="overlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="dash-main">
+    <h2>Welcome{% if student and student['full_name'] %}, {{ student['full_name'] }}{% endif %} 👋</h2>
+
+    <div class="dash-cards">
+      <a class="dash-card" href="{{ url_for('student.book_hostel_page') }}">
+        <h4>Book Hostel</h4>
+        <p>Choose hostel, room, and bunk.</p>
+      </a>
+
+      <a class="dash-card" href="{{ url_for('student.booking_history') }}">
+        <h4>Booking History</h4>
+        <p>View your bookings and status.</p>
+      </a>
+
+      <a class="dash-card" href="{{ url_for('student.cancel_booking_page') }}">
+        <h4>Cancellation</h4>
+        <p>Request cancellation & see approval status.</p>
+      </a>
+
+      <a class="dash-card" href="{{ url_for('student.swap_request_page') }}">
+        <h4>Room Swap</h4>
+        <p>Request a new room/bunk.</p>
+      </a>
+
+      <a class="dash-card" href="{{ url_for('student.roommates_page') }}">
+        <h4>Roommates</h4>
+        <p>See who shares your room.</p>
+      </a>
+
+      <a class="dash-card" href="{{ url_for('student.hostel_card_page') }}">
+        <h4>Hostel Card</h4>
+        <p>Print your hostel allocation card.</p>
+      </a>
+
+      <a class="dash-card" href="{{ url_for('student.ratings_page') }}">
+        <h4>Ratings</h4>
+        <p>Rate hostel/room and leave feedback.</p>
+      </a>
+
+      <a class="dash-card" href="{{ url_for('student.profile_page') }}">
+        <h4>My Profile</h4>
+        <p>Update your name, email & picture.</p>
+      </a>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const closeBtn = document.getElementById("closeSidebarBtn");
+
+      function openSidebar(){
+        sidebar.classList.add("open");
+        overlay.classList.add("show");
+        sidebar.setAttribute("aria-hidden", "false");
+        hamburgerBtn.setAttribute("aria-expanded", "true");
+      }
+
+      function closeSidebar(){
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+        sidebar.setAttribute("aria-hidden", "true");
+        hamburgerBtn.setAttribute("aria-expanded", "false");
+      }
+
+      hamburgerBtn.addEventListener("click", openSidebar);
+      closeBtn.addEventListener("click", closeSidebar);
+      overlay.addEventListener("click", closeSidebar);
+
+      // Close sidebar on Escape
+      document.addEventListener("keydown", function(e){
+        if(e.key === "Escape") closeSidebar();
+      });
+    })();
+  </script>
+
+</body>
+</html>

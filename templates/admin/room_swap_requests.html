@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Room Swap Requests</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<div class="container">
+<h2>Room Swap Requests</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <p class="flash">{{ messages[0] }}</p>
+  {% endif %}
+{% endwith %}
+
+{% if requests and requests|length > 0 %}
+<table class="styled-table">
+    <tr>
+        <th>Student</th>
+        <th>Current Room</th>
+        <th>Requested Room</th>
+        <th>Status</th>
+        <th>Requested At</th>
+        <th>Action</th>
+    </tr>
+
+    {% for req in requests %}
+    <tr>
+        <td>{{ req.full_name }}</td>
+        <td>{{ req.current_room }}</td>
+        <td>{{ req.requested_room }}</td>
+        <td>
+            <span class="status {{ req.status }}">{{ req.status }}</span>
+        </td>
+        <td>{{ req.created_at | datetimeformat }}</td>
+        <td>
+            {% if req.status == 'pending' %}
+            <form method="POST" class="inline-form roomSwapActionForm">
+                <input type="hidden" name="request_id" value="{{ req.id }}">
+                <button type="submit" class="approve-btn" name="action" value="approve">Approve</button>
+                <button type="submit" class="reject-btn" name="action" value="reject">Reject</button>
+            </form>
+            {% else %}
+                <span class="status {{ req.status }}">{{ req.status }}</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <div class="card">
+        <p style="margin:0; font-weight:600; color: var(--dark);">
+            No room swap requests yet.
+        </p>
+        <p style="margin:8px 0 0; color:#666;">
+            When students request a room swap, they will appear here for approval or rejection.
+        </p>
+    </div>
+{% endif %}
+
+</div>
+
+<script>
+/* Confirm approve/reject + prevent double submit */
+document.querySelectorAll(".roomSwapActionForm").forEach(form => {
+    form.addEventListener("submit", function(e){
+        const clicked = e.submitter; // the button that triggered submit
+        if(!clicked) return;
+
+        const action = clicked.value; // approve/reject
+        const confirmMsg = action === "approve"
+            ? "Approve this room swap request?"
+            : "Reject this room swap request?";
+
+        if(!confirm(confirmMsg)){
+            e.preventDefault();
+            return;
+        }
+
+        // Disable both buttons to prevent double clicks
+        const buttons = form.querySelectorAll("button");
+        buttons.forEach(btn => btn.disabled = true);
+
+        // Give user feedback
+        clicked.innerText = "Processing...";
+    });
+});
+
+/* Optional: make status text nicer (Pending -> Pending, etc.) */
+document.querySelectorAll(".status").forEach(el => {
+    const txt = (el.innerText || "").trim().toLowerCase();
+    if(txt) el.innerText = txt.charAt(0).toUpperCase() + txt.slice(1);
+});
+</script>
+
+</body>
+</html>

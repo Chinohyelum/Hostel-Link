@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ratings</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+
+  <style>
+    .stars { display:flex; gap:8px; margin:10px 0; flex-wrap:wrap; }
+    .star-btn {
+      padding:8px 12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:#fff;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .star-btn.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(234,123,123,0.2);
+    }
+    textarea{
+      width:100%;
+      padding:12px;
+      margin:10px 0;
+      border-radius:8px;
+      border:1px solid var(--border);
+      outline:none;
+      min-height:110px;
+      resize:vertical;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Rate Your Hostel / Room</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <p class="flash">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if not allocation %}
+    <p class="flash">You need an active booking before you can submit ratings.</p>
+  {% else %}
+    <form id="ratingForm" method="POST" action="{{ url_for('student.ratings_submit') }}">
+
+      <label><strong>What are you rating?</strong></label>
+      <select name="target" id="target" required>
+        <option value="hostel">Hostel</option>
+        <option value="room">Room</option>
+      </select>
+
+      <label><strong>Rating (1 - 5)</strong></label>
+      <input type="hidden" name="rating" id="ratingInput" value="0" required>
+
+      <div class="stars" id="stars">
+        <button type="button" class="star-btn" data-val="1">1</button>
+        <button type="button" class="star-btn" data-val="2">2</button>
+        <button type="button" class="star-btn" data-val="3">3</button>
+        <button type="button" class="star-btn" data-val="4">4</button>
+        <button type="button" class="star-btn" data-val="5">5</button>
+      </div>
+
+      <label><strong>Comment (optional)</strong></label>
+      <textarea name="comment" id="comment" placeholder="Write your feedback..."></textarea>
+
+      <button class="submit-btn" id="submitBtn" type="submit">Submit Rating</button>
+
+      <div class="help-links" style="margin-top:12px;">
+        <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+      </div>
+    </form>
+  {% endif %}
+
+  <h2 style="margin-top:22px;">My Ratings</h2>
+
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Target</th>
+        <th>Hostel</th>
+        <th>Room</th>
+        <th>Rating</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if ratings and ratings|length > 0 %}
+        {% for r in ratings %}
+          <tr>
+            <td>{{ r['created_at']|datetimeformat }}</td>
+            <td>{{ 'Room' if r['room_id'] else 'Hostel' }}</td>
+            <td>{{ r['hostel_name'] }}</td>
+            <td>{{ r['room_number'] if r['room_number'] else '—' }}</td>
+            <td>{{ r['rating'] }}/5</td>
+            <td>{{ r['comment'] or '' }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr><td colspan="6">No ratings yet.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+(function(){
+  const stars = document.getElementById("stars");
+  const ratingInput = document.getElementById("ratingInput");
+  const submitBtn = document.getElementById("submitBtn");
+  const form = document.getElementById("ratingForm");
+
+  if(stars){
+    stars.addEventListener("click", function(e){
+      const btn = e.target.closest(".star-btn");
+      if(!btn) return;
+      const val = btn.getAttribute("data-val");
+      ratingInput.value = val;
+
+      document.querySelectorAll(".star-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  }
+
+  if(form){
+    form.addEventListener("submit", function(e){
+      if(!ratingInput.value || ratingInput.value === "0"){
+        e.preventDefault();
+        alert("Please select a rating (1 - 5).");
+        return;
+      }
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

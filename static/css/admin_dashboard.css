@@ -1,0 +1,238 @@
+/* ==============================
+   Hostel Link - Admin Dashboard
+   Depends on variables in admin.css:
+   --primary --dark --accent --bg --white --border
+   ============================== */
+
+/* Top row: hamburger | logout | profile */
+.dash-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin:18px 0 18px;
+}
+
+/* Button look reused */
+.icon-btn{
+    background:transparent;
+    border:1px solid var(--border);
+    padding:10px 12px;
+    border-radius:12px;
+    cursor:pointer;
+    color: var(--dark);
+    font-weight:900;
+}
+.icon-btn:hover{
+    border-color: var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.14);
+}
+
+/* Logout button */
+.logout-btn{
+    text-decoration:none;
+    font-weight:900;
+    padding:10px 14px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--white);
+    color:var(--dark);
+    box-shadow:0 8px 18px rgba(0,0,0,0.05);
+}
+.logout-btn:hover{
+    border-color: var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+/* Profile icon */
+.profile-chip{
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+}
+.profile-avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--primary);
+    background:#fff;
+}
+.profile-fallback{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    color: var(--dark);
+    background:#EFF6FF;
+}
+
+/* Hero card */
+.dash-hero{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:16px;
+    border:1px solid rgba(37,99,235,0.25);
+    background: linear-gradient(135deg, #fff, #EFF6FF);
+}
+
+/* Badges */
+.hero-badges{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+.pill{
+    display:inline-block;
+    padding:10px 12px;
+    border-radius:999px;
+    background:var(--white);
+    border:1px solid var(--border);
+    font-weight:800;
+    color:#333;
+}
+
+/* Cards grid */
+.cards{
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap:14px;
+    margin-bottom:16px;
+}
+.dash-card{
+    background:var(--white);
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 10px 22px rgba(0,0,0,0.06);
+    border:1px solid rgba(37,99,235,0.15);
+}
+.dash-card h3{
+    margin:0 0 8px;
+    color:var(--dark);
+}
+.dash-number{
+    font-size:30px;
+    font-weight:900;
+    margin:0 0 8px;
+}
+.dash-link{
+    text-decoration:none;
+    font-weight:900;
+    color:var(--accent);
+}
+.dash-link:hover{
+    text-decoration:underline;
+}
+
+/* Quick actions */
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:10px;
+}
+.action-btn{
+    display:inline-block;
+    padding:12px 14px;
+    border-radius:12px;
+    text-decoration:none;
+    background:var(--primary);
+    color:#fff;
+    font-weight:900;
+}
+.action-btn:hover{
+    background:var(--accent);
+}
+
+/* ============ Drawer Sidebar + Overlay ============ */
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.35);
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+    z-index:998;
+}
+.overlay.overlay-show{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.sidebar-drawer{
+    position:fixed;
+    top:0;
+    left:-330px;
+    width:300px;
+    height:100vh;
+    background:var(--white);
+    box-shadow:0 14px 40px rgba(0,0,0,0.18);
+    padding:16px;
+    transition:.25s;
+    z-index:999;
+    overflow:auto;
+}
+.sidebar-drawer.drawer-open{
+    left:0;
+}
+
+/* Drawer header */
+.sidebar-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+}
+
+/* Brand */
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:900;
+    color:var(--dark);
+}
+.brand-dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--primary);
+    display:inline-block;
+}
+
+/* Menu links */
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:14px;
+}
+.nav-link{
+    display:block;
+    padding:12px 12px;
+    border-radius:12px;
+    text-decoration:none;
+    color:#333;
+    font-weight:800;
+    background:#fff;
+    border:1px solid var(--border);
+}
+.nav-link:hover{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.12);
+}
+.nav-link-danger{
+    border-color:#BFDBFE;
+    color:#1E3A8A;
+    background:#EFF6FF;
+}
+
+/* Responsive */
+@media(max-width: 900px){
+    .cards{ grid-template-columns: 1fr; }
+    .dash-hero{ flex-direction:column; }
+    .hero-badges{ justify-content:flex-start; }
+}

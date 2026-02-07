@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cancellation Requests</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<div class="container">
+<h2>Cancellation Requests</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <p class="flash">{{ messages[0] }}</p>
+  {% endif %}
+{% endwith %}
+
+{% if requests and requests|length > 0 %}
+<table class="styled-table">
+    <tr>
+        <th>Student</th>
+        <th>Room</th>
+        <th>Status</th>
+        <th>Requested At</th>
+        <th>Action</th>
+    </tr>
+
+    {% for req in requests %}
+    <tr>
+        <td>{{ req.full_name }}</td>
+        <td>{{ req.room_number }}</td>
+        <td><span class="status {{ req.status }}">{{ req.status }}</span></td>
+        <td>{{ req.created_at | datetimeformat }}</td>
+        <td>
+            {% if req.status == 'pending' %}
+            <form method="POST" class="inline-form cancelActionForm">
+                <input type="hidden" name="request_id" value="{{ req.id }}">
+                <button type="submit" class="approve-btn" name="action" value="approve">Approve</button>
+                <button type="submit" class="reject-btn" name="action" value="reject">Reject</button>
+            </form>
+            {% else %}
+                <span class="status {{ req.status }}">{{ req.status }}</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <div class="card">
+        <p style="margin:0; font-weight:600; color: var(--dark);">No cancellation requests yet.</p>
+        <p style="margin:8px 0 0; color:#666;">When students request cancellation, they will appear here.</p>
+    </div>
+{% endif %}
+
+</div>
+
+<script>
+/* Confirm approve/reject + prevent double submit */
+document.querySelectorAll(".cancelActionForm").forEach(form => {
+    form.addEventListener("submit", function(e){
+        const clicked = e.submitter;
+        if(!clicked) return;
+
+        const action = clicked.value;
+        const msg = action === "approve"
+            ? "Approve this cancellation request? This will free the student's bunk."
+            : "Reject this cancellation request?";
+
+        if(!confirm(msg)){
+            e.preventDefault();
+            return;
+        }
+
+        // disable both buttons
+        form.querySelectorAll("button").forEach(btn => btn.disabled = true);
+        clicked.innerText = "Processing...";
+    });
+});
+
+/* Make status text pretty */
+document.querySelectorAll(".status").forEach(el => {
+    const txt = (el.innerText || "").trim().toLowerCase();
+    if(txt) el.innerText = txt.charAt(0).toUpperCase() + txt.slice(1);
+});
+</script>
+
+</body>
+</html>

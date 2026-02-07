@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<div>
+    <h2>Create New Student</h2>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <p class="flash">{{ messages[0] }}</p>
+    {% endif %}
+    {% endwith %}
+
+    <form id="createStudentForm" method="POST" autocomplete="off" auto-complete="new-student">
+        <input type="text" name="full_name" placeholder="Full Name" required autocomplete="new-full-name">
+        <input type="text" name="matric_no" placeholder="Matric Number" required autocomplete="new-matric-no">
+        <input type="email" name="email" placeholder="Email" required autocomplete="new-email">
+        <input type="password" name="password" placeholder="Password" required minlength="6" autocomplete="new-password">
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required minlength="6" autocomplete="new-password">
+        <button type="submit">Create Student</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('createStudentForm').addEventListener('submit', function(e){
+    let pw = this.password.value.trim();
+    let cpw = this.confirm_password.value.trim();
+    if(pw !== cpw){
+        alert("Passwords do not match");
+        e.preventDefault();
+        return false;
+    }
+    if(pw.length < 6){
+        alert("Password must be at least 6 characters");
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
+
+</body>
+</html>

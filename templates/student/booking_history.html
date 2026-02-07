@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking History</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>Booking History</h2>
+
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Hostel</th>
+        <th>Room</th>
+        <th>Bunk</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% if bookings %}
+        {% for b in bookings %}
+        <tr>
+          <td>{{ b['created_at']|datetimeformat }}</td>
+          <td>{{ b['hostel_name'] }}</td>
+          <td>{{ b['room_number'] }}</td>
+          <td>{{ b['bunk_label'] }}</td>
+          <td><span class="status {{ b['status'] }}">{{ b['status'] }}</span></td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5">No bookings yet.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <div class="help-links" style="margin-top:12px;">
+    <a href="{{ url_for('student.book_hostel_page') }}">Book Hostel</a>
+    <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+  </div>
+</div>
+
+</body>
+</html>

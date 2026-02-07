@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Hostel</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>Book Hostel</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <p class="flash">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form id="bookingForm" method="POST" action="{{ url_for('student.book_hostel_submit') }}">
+    <label><strong>Select Hostel</strong></label>
+    <select name="hostel_id" id="hostelSelect" required>
+      <option value="">-- choose hostel --</option>
+      {% for h in hostels %}
+        <option value="{{ h['id'] }}">{{ h['name'] }}</option>
+      {% endfor %}
+    </select>
+
+    <label><strong>Select Room</strong></label>
+    <select name="room_id" id="roomSelect" required disabled>
+      <option value="">-- choose room --</option>
+    </select>
+
+    <label><strong>Select Bunk</strong></label>
+    <select name="bunk_id" id="bunkSelect" required disabled>
+      <option value="">-- choose bunk --</option>
+    </select>
+
+    <button class="submit-btn" id="bookBtn" type="submit">Book Now</button>
+
+    <div class="help-links" style="margin-top:12px;">
+      <a href="{{ url_for('student.booking_history') }}">View Booking History</a>
+      <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+    </div>
+  </form>
+</div>
+
+<script>
+(function () {
+  const hostelSelect = document.getElementById("hostelSelect");
+  const roomSelect = document.getElementById("roomSelect");
+  const bunkSelect = document.getElementById("bunkSelect");
+  const bookBtn = document.getElementById("bookBtn");
+
+  function resetSelect(selectEl, placeholder) {
+    selectEl.innerHTML = `<option value="">${placeholder}</option>`;
+    selectEl.disabled = true;
+  }
+
+  hostelSelect.addEventListener("change", async function () {
+    resetSelect(roomSelect, "-- choose room --");
+    resetSelect(bunkSelect, "-- choose bunk --");
+
+    const hostelId = hostelSelect.value;
+    if (!hostelId) return;
+
+    const res = await fetch(`/student/api/rooms/${hostelId}`);
+    const rooms = await res.json();
+
+    rooms.forEach(r => {
+      const opt = document.createElement("option");
+      opt.value = r.id;
+      opt.textContent = r.room_number;
+      roomSelect.appendChild(opt);
+    });
+
+    roomSelect.disabled = rooms.length === 0;
+  });
+
+  roomSelect.addEventListener("change", async function () {
+    resetSelect(bunkSelect, "-- choose bunk --");
+    const roomId = roomSelect.value;
+    if (!roomId) return;
+
+    const res = await fetch(`/student/api/bunks/${roomId}`);
+    const bunks = await res.json();
+
+    bunks.forEach(b => {
+      const opt = document.createElement("option");
+      opt.value = b.id;
+      opt.textContent = b.bunk_label;
+      bunkSelect.appendChild(opt);
+    });
+
+    bunkSelect.disabled = bunks.length === 0;
+  });
+
+  document.getElementById("bookingForm").addEventListener("submit", function () {
+    bookBtn.disabled = true;
+    bookBtn.textContent = "Booking...";
+  });
+})();
+</script>
+
+</body>
+</html>

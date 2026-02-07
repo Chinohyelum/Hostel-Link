@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- TOP ROW (no navbar) -->
+    <div class="dash-top">
+        <!-- Left: Hamburger -->
+        <button class="icon-btn" id="openSidebar" type="button" aria-label="Open menu">☰</button>
+
+        <!-- Middle/Right: Logout -->
+        <a class="logout-btn" href="/logout">Logout</a>
+
+
+        <!-- Right: Profile Icon -->
+        <a class="profile-chip" href="{{ url_for('admin.admin_profile') }}" title="Edit Profile">
+            {% if admin and admin['profile_picture'] %}
+                <img class="profile-avatar"
+                     src="{{ url_for('static', filename=admin['profile_picture']) }}"
+                     alt="Profile">
+            {% else %}
+                <div class="profile-avatar profile-fallback">
+                    {% if admin %}
+                        {{ (admin['first_name'][:1] ~ admin['last_name'][:1]) | upper }}
+                    {% else %}
+                        AD
+                    {% endif %}
+                </div>
+            {% endif %}
+        </a>
+    </div>
+
+    <!-- FLASH -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <p class="flash">{{ messages[0] }}</p>
+      {% endif %}
+    {% endwith %}
+
+    <!-- MAIN CONTENT -->
+    <div class="dash-hero card">
+        <div>
+            <h2 style="margin:0;">Welcome back{% if admin %}, {{ admin['first_name'] }}{% endif %} 👋</h2>
+            <p style="margin:8px 0 0; color:#666; font-weight:500;">
+                Manage hostels, rooms, bunks and handle student requests.
+            </p>
+        </div>
+        <div class="hero-badges">
+            <span class="pill">Hostels: <strong>{{ hostel_count }}</strong></span>
+            <span class="pill">Room Swaps: <strong>{{ room_swap_pending }}</strong></span>
+            <span class="pill">Cancellations: <strong>{{ cancel_pending }}</strong></span>
+        </div>
+    </div>
+
+    <!-- QUICK CARDS -->
+    <section class="cards">
+        <div class="dash-card">
+            <h3>Hostels</h3>
+            <p class="dash-number">{{ hostel_count }}</p>
+            <a class="dash-link" href="{{ url_for('hostel.create_hostel') }}">Create / Manage →</a>
+        </div>
+
+        <div class="dash-card">
+            <h3>Room Swap Requests</h3>
+            <p class="dash-number">{{ room_swap_pending }}</p>
+            <a class="dash-link" href="/admin/room-swap-requests">View →</a>
+        </div>
+
+        <div class="dash-card">
+            <h3>Cancellation Requests</h3>
+            <p class="dash-number">{{ cancel_pending }}</p>
+            <a class="dash-link" href="/admin/cancellation-requests">View →</a>
+        </div>
+    </section>
+
+    <!-- QUICK ACTIONS -->
+    <section class="dash-section card">
+        <h3 style="margin-top:0;">Quick Actions</h3>
+        <div class="actions">
+            <a class="action-btn" href="{{ url_for('hostel.create_hostel') }}">Create Hostel</a>
+            <a class="action-btn" href="/admin/create-student">Create Student</a>
+            <a class="action-btn" href="/admin/create-admin">Create Admin</a>
+            <a class="action-btn" href="/admin/notifications">Notifications</a>
+        </div>
+    </section>
+
+</div>
+
+<!-- SIDEBAR OVERLAY MENU (hidden by default) -->
+<div class="overlay" id="overlay"></div>
+
+<aside class="sidebar-drawer" id="sidebar">
+    <div class="sidebar-header">
+        <div class="brand">
+            <span class="brand-dot"></span>
+            <span class="brand-text">Hostel Link</span>
+        </div>
+        <button class="icon-btn" id="closeSidebar" type="button" aria-label="Close menu">✕</button>
+    </div>
+
+    <nav class="nav">
+        <a class="nav-link" href="{{ url_for('dashboard.admin_dashboard') }}">Dashboard</a>
+        <a class="nav-link" href="{{ url_for('hostel.create_hostel') }}">Create / Manage Hostels</a>
+        <a class="nav-link" href="/admin/create-student">Create Student</a>
+        <a class="nav-link" href="/admin/create-admin">Create Admin</a>
+        <a class="nav-link" href="/admin/notifications">Notifications</a>
+        <a class="nav-link" href="/admin/room-swap-requests">Room Swap Requests</a>
+        <a class="nav-link" href="/admin/cancellation-requests">Cancellation Requests</a>
+        <a class="nav-link" href="{{ url_for('admin.admin_profile') }}">Profile</a>
+    </nav>
+
+    <a class="nav-link nav-link-danger" href="/logout">Logout</a>
+</aside>
+
+<script>
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const openBtn = document.getElementById("openSidebar");
+const closeBtn = document.getElementById("closeSidebar");
+
+function openSidebar(){
+  sidebar.classList.add("drawer-open");
+  overlay.classList.add("overlay-show");
+}
+function closeSidebar(){
+  sidebar.classList.remove("drawer-open");
+  overlay.classList.remove("overlay-show");
+}
+
+openBtn.addEventListener("click", openSidebar);
+closeBtn.addEventListener("click", closeSidebar);
+overlay.addEventListener("click", closeSidebar);
+
+// Escape closes menu
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Escape") closeSidebar();
+});
+</script>
+
+</body>
+</html>

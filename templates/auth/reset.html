@@ -1,0 +1,43 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+
+<div class="reset-form">
+
+    <h2>Reset Password</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <p class="error">{{ messages[0] }}</p>
+  {% endif %}
+{% endwith %}
+
+<form id="resetForm" method="POST">
+    <input type="text" name="code" placeholder="Enter 4-digit code" required maxlength="4" pattern="\d{4}" autocomplete="one-time-code">
+    <input type="password" name="new_password" placeholder="New Password" required minlength="6" autocomplete="new-password">
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required minlength="6" autocomplete="new-password">
+    <button type="submit">Reset Password</button>
+</form>
+</div>
+
+<script>
+document.getElementById('resetForm').addEventListener('submit', function(e){
+    let code = this.code.value.trim();
+    let newPass = this.new_password.value.trim();
+    let confirmPass = this.confirm_password.value.trim();
+
+    if(!/^\d{4}$/.test(code)){
+        alert("Code must be 4 digits");
+        e.preventDefault();
+        return false;
+    }
+    if(newPass.length < 6){
+        alert("Password must be at least 6 characters");
+        e.preventDefault();
+        return false;
+    }
+    if(newPass !== confirmPass){
+        alert("Passwords do not match");
+        e.preventDefault();
+        return false;
+    }
+});
+</script>

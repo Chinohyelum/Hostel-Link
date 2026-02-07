@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hostel Card</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+
+  <!-- Small print-only styling -->
+  <style>
+    .card-wrap{
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.06);
+      border: 2px solid var(--border);
+    }
+    .card-top{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:center;
+      text-align:center;
+      margin-bottom:18px;
+    }
+    .card-avatar{
+      width:130px;
+      height:130px;
+      border-radius:50%;
+      object-fit:cover;
+      border:4px solid var(--primary);
+      box-shadow:0 8px 18px rgba(0,0,0,0.08);
+      background:#fff;
+    }
+    .card-title{
+      flex:1;
+      min-width:240px;
+    }
+    .card-title h2{ margin:0; }
+    .card-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    .card-item{
+      background:#fff9f9;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+    }
+    .card-item small{
+      display:block;
+      opacity:.75;
+      margin-bottom:4px;
+      font-weight:600;
+      color: var(--dark);
+    }
+    .card-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+      justify-content:center;
+    }
+
+    /* Print only: hide buttons/links and remove shadows */
+    @media print{
+      body{ background:#fff; padding:0; }
+      .card-actions, .help-links { display:none !important; }
+      .card-wrap{ box-shadow:none; border:1px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Hostel Card</h2>
+
+  <div class="card-wrap" id="hostelCard">
+    <div class="card-top">
+      {% if student['profile_pic'] %}
+        <img class="card-avatar"
+             src="{{ url_for('static', filename='uploads/' ~ student['profile_pic']) }}"
+             alt="Profile Picture">
+      {% else %}
+        <img class="card-avatar" src="" alt="No photo" style="display:none;">
+      {% endif %}
+
+      <div class="card-title">
+        <h2>{{ student['full_name'] }}</h2>
+        <p style="margin:6px 0 0;"><strong>Matric No:</strong> {{ student['matric_no'] }}</p>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card-item">
+        <small>Department</small>
+        <div>{{ student['department'] or 'Not set' }}</div>
+      </div>
+
+      <div class="card-item">
+        <small>Hostel</small>
+        <div>{{ allocation['hostel_name'] }}</div>
+      </div>
+
+      <div class="card-item">
+        <small>Room Number</small>
+        <div>{{ allocation['room_number'] }}</div>
+      </div>
+
+      <div class="card-item">
+        <small>Bunk</small>
+        <div>{{ allocation['bunk_label'] }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-actions">
+    <button class="submit-btn" id="printBtn" type="button">Print Hostel Card</button>
+  </div>
+
+  <div class="help-links" style="margin-top:12px;">
+    <a href="{{ url_for('student.roommates_page') }}">My Roommates</a>
+    <a href="{{ url_for('student.booking_history') }}">Booking History</a>
+    <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  const btn = document.getElementById("printBtn");
+  if(btn){
+    btn.addEventListener("click", function(){
+      window.print();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

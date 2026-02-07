@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cancellation Request</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>Cancellation Request</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <p class="flash">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if not room_id %}
+    <p class="flash">You don’t have an active room allocation yet.</p>
+  {% else %}
+    <form method="POST" action="{{ url_for('student.cancel_booking_submit') }}">
+      <p><strong>Your current room ID:</strong> {{ room_id }}</p>
+      <button class="submit-btn" type="submit">Submit Cancellation Request</button>
+    </form>
+  {% endif %}
+
+  <h2 style="margin-top:22px;">My Cancellation Requests</h2>
+
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Hostel</th>
+        <th>Room</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if requests and requests|length > 0 %}
+        {% for r in requests %}
+          <tr>
+            <td>{{ r['created_at']|datetimeformat }}</td>
+            <td>{{ r['hostel_name'] }}</td>
+            <td>{{ r['room_number'] }}</td>
+            <td><span class="status {{ r['status'] }}">{{ r['status'] }}</span></td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr><td colspan="4">No cancellation requests yet.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <div class="help-links" style="margin-top:12px;">
+    <a href="{{ url_for('student.booking_history') }}">Booking History</a>
+    <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+  </div>
+</div>
+
+</body>
+</html>

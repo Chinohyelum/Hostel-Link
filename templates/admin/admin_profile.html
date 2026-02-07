@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Admin Profile</h2>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <p class="flash">{{ messages[0] }}</p>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" id="profileForm">
+
+        <!-- PROFILE PICTURE (clickable) -->
+        <div class="profile-header">
+            <div class="avatar-wrap">
+                <label for="profile_picture" class="avatar-label" title="Click to change profile photo">
+                    {% if admin.profile_picture %}
+                        <img
+                            id="avatarPreview"
+                            class="avatar"
+                            src="{{ url_for('static', filename=admin.profile_picture) }}"
+                            alt="Profile photo">
+                    {% else %}
+                        <div id="avatarPreview" class="avatar avatar-placeholder">
+                            <span class="avatar-initials">
+                                {{ (admin.first_name[:1] ~ admin.last_name[:1]) | upper }}
+                            </span>
+                            <span class="avatar-hint">Click to upload</span>
+                        </div>
+                    {% endif %}
+                </label>
+                <input id="profile_picture" type="file" name="profile_picture" accept="image/*" hidden>
+            </div>
+
+            <div class="profile-meta">
+                <p class="meta-line"><strong>First Name:</strong> {{ admin.first_name }}</p>
+                <p class="meta-line"><strong>Last Name:</strong> {{ admin.last_name }}</p>
+                <p class="meta-line"><strong>Email:</strong> {{ admin.email }}</p>
+                <p class="meta-line"><strong>Role:</strong> {{ admin.role or 'admin' }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Edit Details</h3>
+
+            <div class="field">
+                <label for="first_name">First Name</label>
+                <input id="first_name" type="text" name="first_name" value="{{ admin.first_name }}" required>
+            </div>
+
+            <div class="field">
+                <label for="last_name">Last Name</label>
+                <input id="last_name" type="text" name="last_name" value="{{ admin.last_name }}" required>
+            </div>
+
+            <div class="field">
+                <label for="nickname">Nickname (optional)</label>
+                <input id="nickname" type="text" name="nickname" value="{{ admin.nickname or '' }}" placeholder="e.g., Hostel Boss">
+            </div>
+
+            <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" value="{{ admin.email }}" required>
+            </div>
+
+            <div class="field">
+                <label for="role">Role</label>
+                <select id="role" name="role">
+                    <option value="admin" {% if (admin.role or 'admin') == 'admin' %}selected{% endif %}>Admin</option>
+                    <option value="superadmin" {% if admin.role == 'superadmin' %}selected{% endif %}>Super Admin</option>
+                </select>
+            </div>
+
+            <p class="help-links">
+                <a href="{{ url_for('auth.forgot_password') }}">Forgot / Reset Password</a>
+            </p>
+
+            <button type="submit" class="submit-btn">Update Profile</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+/* Clickable avatar -> file picker */
+const fileInput = document.getElementById("profile_picture");
+const avatarPreview = document.getElementById("avatarPreview");
+
+fileInput.addEventListener("change", function () {
+    const file = this.files && this.files[0];
+    if (!file) return;
+
+    // basic type check
+    if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        this.value = "";
+        return;
+    }
+
+    // show preview
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        // If placeholder div exists, replace with img
+        if (avatarPreview.tagName.toLowerCase() !== "img") {
+            const img = document.createElement("img");
+            img.id = "avatarPreview";
+            img.className = "avatar";
+            img.alt = "Profile photo preview";
+            img.src = e.target.result;
+            avatarPreview.replaceWith(img);
+        } else {
+            avatarPreview.src = e.target.result;
+        }
+    };
+    reader.readAsDataURL(file);
+});
+
+/* Form validation */
+document.getElementById("profileForm").addEventListener("submit", function(e){
+    const fname = this.first_name.value.trim();
+    const lname = this.last_name.value.trim();
+    const email = this.email.value.trim();
+
+    if(!fname || !lname || !email){
+        alert("First name, last name, and email are required.");
+        e.preventDefault();
+        return;
+    }
+
+    // small email sanity check
+    if(!email.includes("@") || !email.includes(".")){
+        alert("Please enter a valid email address.");
+        e.preventDefault();
+        return;
+    }
+});
+</script>
+</body>
+</html>

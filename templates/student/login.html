@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Login</title>
+
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/auth.css') }}">
+
+</head>
+
+<body>
+  <div class="loginwrapper">
+    <h2>Student Login</h2>
+
+    <!-- FLASH MESSAGES (works with your .flash styling) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="flash">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form id="studentLoginForm" method="POST" action="{{ url_for('student.login') }}" novalidate>
+      <label for="matric_no"><strong>Matric Number</strong></label>
+      <input
+        type="text"
+        id="matric_no"
+        name="matric_no"
+        placeholder="e.g. gouu22csc823"
+        autocomplete="username"
+        required
+      />
+
+      <label for="password"><strong>Password</strong></label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required
+      />
+
+      <!-- Small helper actions (no new CSS needed) -->
+      <div class="help-links" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+        <a href="#" id="togglePassword">Show password</a>
+
+        <!-- We'll wire forgot password route later; keep as placeholder for now -->
+        <a href="{{ url_for('student.forgot_password_page') }}" style="opacity:.85;">Forgot password?</a>
+
+      </div>
+
+      <button class="submit-btn" type="submit" id="loginBtn">Login</button>
+    </form>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById("studentLoginForm");
+      const matricInput = document.getElementById("matric_no");
+      const passwordInput = document.getElementById("password");
+      const togglePassword = document.getElementById("togglePassword");
+      const loginBtn = document.getElementById("loginBtn");
+
+      // Toggle show/hide password
+      togglePassword.addEventListener("click", function (e) {
+        e.preventDefault();
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+        togglePassword.textContent = isPassword ? "Hide password" : "Show password";
+      });
+
+      // Basic client-side validation + UX
+      form.addEventListener("submit", function (e) {
+        const matric = matricInput.value.trim();
+        const pass = passwordInput.value;
+
+        if (!matric || !pass) {
+          e.preventDefault();
+          alert("Please enter your matric number and password.");
+          return;
+        }
+
+        // Disable button to prevent double-submit
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Signing in...";
+      });
+    })();
+  </script>
+</body>
+</html>

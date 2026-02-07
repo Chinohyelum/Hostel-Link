@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Room Swap Request</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>Request Room Swap</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <p class="flash">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form id="swapForm" method="POST" action="{{ url_for('student.swap_request_submit') }}">
+    <label><strong>Select Hostel (where you want to move)</strong></label>
+    <select name="hostel_id" id="hostelSelect" required>
+      <option value="">-- choose hostel --</option>
+      {% for h in hostels %}
+        <option value="{{ h['id'] }}">{{ h['name'] }}</option>
+      {% endfor %}
+    </select>
+
+    <label><strong>Select Room</strong></label>
+    <select name="room_id" id="roomSelect" required disabled>
+      <option value="">-- choose room --</option>
+    </select>
+
+    <label><strong>Select Bunk</strong></label>
+    <select name="bunk_id" id="bunkSelect" required disabled>
+      <option value="">-- choose bunk --</option>
+    </select>
+
+    <label><strong>Reason (optional)</strong></label>
+    <input type="text" name="reason" placeholder="Why do you want this swap?">
+
+    <button class="submit-btn" id="swapBtn" type="submit">Submit Swap Request</button>
+  </form>
+
+  <div class="help-links" style="margin-top:12px;">
+    <a href="{{ url_for('student.roommates_page') }}">My Roommates</a>
+    <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  const hostelSelect = document.getElementById("hostelSelect");
+  const roomSelect = document.getElementById("roomSelect");
+  const bunkSelect = document.getElementById("bunkSelect");
+  const swapBtn = document.getElementById("swapBtn");
+
+  function resetSelect(el, placeholder){
+    el.innerHTML = `<option value="">${placeholder}</option>`;
+    el.disabled = true;
+  }
+
+  hostelSelect.addEventListener("change", async function(){
+    resetSelect(roomSelect, "-- choose room --");
+    resetSelect(bunkSelect, "-- choose bunk --");
+
+    const hostelId = hostelSelect.value;
+    if(!hostelId) return;
+
+    const res = await fetch(`/student/api/rooms/${hostelId}`);
+    const rooms = await res.json();
+
+    rooms.forEach(r => {
+      const opt = document.createElement("option");
+      opt.value = r.id;
+      opt.textContent = r.room_number;
+      roomSelect.appendChild(opt);
+    });
+
+    roomSelect.disabled = rooms.length === 0;
+  });
+
+  roomSelect.addEventListener("change", async function(){
+    resetSelect(bunkSelect, "-- choose bunk --");
+
+    const roomId = roomSelect.value;
+    if(!roomId) return;
+
+    const res = await fetch(`/student/api/bunks/${roomId}`);
+    const bunks = await res.json();
+
+    bunks.forEach(b => {
+      const opt = document.createElement("option");
+      opt.value = b.id;
+      opt.textContent = b.bunk_label;
+      bunkSelect.appendChild(opt);
+    });
+
+    bunkSelect.disabled = bunks.length === 0;
+  });
+
+  document.getElementById("swapForm").addEventListener("submit", function(){
+    swapBtn.disabled = true;
+    swapBtn.textContent = "Submitting...";
+  });
+})();
+</script>
+
+</body>
+</html>

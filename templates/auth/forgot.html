@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+
+
+
+<div class="forgotdiv">
+
+    <h2>Forgot Password</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <p class="error">{{ messages[0] }}</p>
+    {% endif %}
+    {% endwith %}
+
+    <form id="forgotForm" method="POST">
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <button type="submit">Send Code</button>
+    </form>
+
+    <a href="{{ url_for('auth.login') }}" class="back-to-login">Back to Login</a>
+
+</div>
+
+<script>
+document.getElementById('forgotForm').addEventListener('submit', function(e){
+    let email = this.email.value.trim();
+    if(!email){
+        alert("Email is required");
+        e.preventDefault();
+        return false;
+    }
+});
+</script>

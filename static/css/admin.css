@@ -1,0 +1,354 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Open+Sans:wght@400;500;600&display=swap');
+
+/* ---------------- COLOR GUIDE ---------------- */
+:root{
+    --primary:#2563EB;
+    --dark:#111827;
+    --accent:#1E4ED8;
+    --bg:#FFFFFF;
+    --white:#fff;
+    --border:#E2E8F0;
+}
+
+/* ---------------- GLOBAL ---------------- */
+body{
+    font-family: 'Open Sans', sans-serif;
+    background: var(--bg);
+    margin:0;
+    padding:40px;
+    color:#111827;
+}
+
+h2{
+    font-family: 'Poppins', sans-serif;
+    color:var(--dark);
+    margin-bottom:15px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+/* ---------------- FLASH ---------------- */
+.flash{
+    background:#EFF6FF;
+    border-left:5px solid var(--accent);
+    padding:10px;
+    margin:10px 0 20px;
+    border-radius:6px;
+    font-weight:600;
+}
+
+/* ---------------- FORMS ---------------- */
+form{
+    background:var(--white);
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 8px 18px rgba(0,0,0,0.06);
+    max-width:500px;
+}
+
+input, select{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid var(--border);
+    outline:none;
+    transition:.2s;
+}
+
+input:focus, select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.2);
+}
+
+/* ---------------- BUTTONS ---------------- */
+button{
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.2s;
+}
+
+button:hover{
+    background:var(--accent);
+}
+
+button.add-btn{
+    background:var(--accent);
+    padding:6px 12px;
+    margin-left:12px;
+    font-size:14px;
+    border-radius:6px;
+}
+
+button.add-btn:hover{
+    background:var(--dark);
+}
+
+button.remove-btn{
+    background:#DBEAFE;
+    color:#1E3A8A;
+    padding:4px 9px;
+    border-radius:6px;
+    font-size:13px;
+}
+
+button.remove-btn:hover{
+    background:#BFDBFE;
+}
+
+button[value="approve"]{
+    background:#28a745;
+}
+
+button[value="reject"]{
+    background:#dc3545;
+}
+
+button[value="approve"]:hover{ background:#1e7e34; }
+button[value="reject"]:hover{ background:#bd2130; }
+
+button.submit-btn{
+    width:100%;
+    margin-top:15px;
+    font-size:16px;
+}
+
+/* ---------------- TABLES ---------------- */
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 10px 22px rgba(0,0,0,0.06);
+}
+
+th{
+    background:var(--dark);
+    color:white;
+    padding:14px;
+    text-align:left;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid var(--border);
+}
+
+tr:hover{
+    background:#F8FAFC;
+}
+
+.styled-table{
+    margin-top:20px;
+}
+
+.styled-table td{
+    vertical-align:middle;
+}
+
+/* ---------------- STATUS BADGES ---------------- */
+.status{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.status.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.status.approved{
+    background:#d4edda;
+    color:#155724;
+}
+
+.status.rejected{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+/* ---------------- ROOM & BUNK BOXES ---------------- */
+.room-box{
+    border:2px dashed var(--border);
+    padding:18px;
+    margin-top:18px;
+    border-radius:12px;
+    background:#F8FAFC;
+}
+
+.room-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.room-header h4{
+    margin:0;
+    font-family: 'Poppins', sans-serif;
+    color:var(--dark);
+}
+
+.bunks{
+    margin-top:10px;
+    padding:10px 0;
+}
+
+.bunk-box{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.bunk-box input{
+    flex:1;
+}
+
+/* ---------------- MOBILE FRIENDLY ---------------- */
+@media(max-width:768px){
+    body{ padding:20px; }
+    table, thead, tbody, th, td, tr{ display:block; }
+    th{ display:none; }
+    td{
+        border:none;
+        padding:10px;
+        position:relative;
+    }
+    tr{
+        margin-bottom:15px;
+        border-radius:12px;
+        box-shadow:0 6px 12px rgba(0,0,0,0.05);
+        background:white;
+    }
+}
+
+
+
+/* --------------- ADMIN PROFILE DESIGN --------------- */
+
+form input[type="file"]{
+    padding:5px;
+}
+
+form img{
+    display:block;
+    margin:10px 0;
+    border-radius:50%;
+    border:2px solid var(--primary);
+}
+
+form select{
+    margin-bottom:10px;
+}
+
+form p a{
+    color:var(--primary);
+    text-decoration:none;
+}
+
+form p a:hover{
+    text-decoration:underline;
+}
+
+
+/* Profile UI */
+.profile-header{
+    display:flex;
+    gap:20px;
+    align-items:center;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.avatar-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.avatar-label{
+    cursor:pointer;
+    display:inline-block;
+}
+
+.avatar{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid var(--primary);
+    box-shadow:0 8px 18px rgba(0,0,0,0.08);
+    background: var(--white);
+}
+
+.avatar-placeholder{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:#EFF6FF;
+    border:3px dashed var(--primary);
+    text-align:center;
+    padding:10px;
+}
+
+.avatar-initials{
+    font-size:28px;
+    font-weight:700;
+    color:var(--dark);
+    line-height:1;
+}
+
+.avatar-hint{
+    margin-top:6px;
+    font-size:12px;
+    color:#6B7280;
+}
+
+.profile-meta{
+    background:var(--white);
+    padding:14px 16px;
+    border-radius:12px;
+    box-shadow:0 8px 18px rgba(0,0,0,0.06);
+    flex:1;
+    min-width:240px;
+}
+
+.meta-line{
+    margin:6px 0;
+}
+
+.field label{
+    display:block;
+    font-weight:600;
+    margin-top:10px;
+    color:var(--dark);
+}
+
+.help-links{
+    margin-top:10px;
+}
+.help-links a{
+    color:var(--dark);
+    font-weight:600;
+    text-decoration:none;
+}
+.help-links a:hover{
+    text-decoration:underline;
+}
+
+.approve-btn{ background:#28a745; }
+.reject-btn{ background:#dc3545; }
+.approve-btn:hover{ background:#1e7e34; }
+.reject-btn:hover{ background:#bd2130; }

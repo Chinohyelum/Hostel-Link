@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Roommates</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>My Roommates</h2>
+
+  <p>
+    <strong>Hostel:</strong> {{ allocation['hostel_name'] }}
+    &nbsp; | &nbsp;
+    <strong>Room:</strong> {{ allocation['room_number'] }}
+    &nbsp; | &nbsp;
+    <strong>Your bunk:</strong> {{ allocation['bunk_label'] }}
+  </p>
+
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Nickname / Name</th>
+        <th>Matric No</th>
+        <th>Department</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if roommates and roommates|length > 0 %}
+        {% for r in roommates %}
+          <tr>
+            <td>{{ r['display_name'] }}</td>
+            <td>{{ r['matric_no'] }}</td>
+            <td>{{ r['department'] or '—' }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="3">No roommates yet (you may be the only occupant).</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <div class="help-links" style="margin-top:12px;">
+    <a href="{{ url_for('student.hostel_card_page') }}">Print Hostel Card</a>
+    <a href="{{ url_for('student.book_hostel_page') }}">Book Hostel</a>
+    <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+  </div>
+</div>
+
+</body>
+</html>

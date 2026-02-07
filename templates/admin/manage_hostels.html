@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Hostel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h2>{{ hostel.name }} ({{ hostel.gender | capitalize }})</h2>
+<p>Faculty: {{ hostel.faculty or 'All' }}</p>
+
+<hr>
+
+<h3>Existing Rooms & Bunks</h3>
+
+{% for block in room_data %}
+<div class="card room-box">
+    <div class="room-header">
+        <h4>Room {{ block.room.room_number }} (Capacity: {{ block.room.capacity }})</h4>
+    </div>
+
+    <ul class="bunks">
+        {% for bunk in block.bunks %}
+        <li>
+            Bunk {{ bunk.bunk_label }}
+            {% if bunk.occupied %}
+            <span class="status rejected">FULL</span>
+            {% else %}
+            <span class="status approved">FREE</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Add bunks dynamically -->
+    <form method="POST" action="{{ url_for('hostel_api.add_bunk', room_id=block.room.id) }}" class="inline-form" id="bunkForm{{ block.room.id }}">
+        <div id="bunkContainer{{ block.room.id }}">
+            <input name="bunk_label" placeholder="New Bunk Label" required>
+        </div>
+        <button type="button" class="add-btn" data-room-id="{{ block.room.id }}" onclick="addBunkInput(this.dataset.roomId)">+ Add Bunk</button>
+        <button type="submit">Save Bunks</button>
+    </form>
+
+</div>
+{% endfor %}
+
+<hr>
+
+<h3>Add New Rooms</h3>
+<form method="POST" action="{{ url_for('hostel_api.add_room', hostel_id=hostel.id) }}" id="roomForm">
+    <div id="roomContainer">
+        <div class="card room-box">
+            <div class="room-header">
+                <h4>New Room</h4>
+                <button type="button" class="remove-btn" onclick="removeRoom(this)">✖</button>
+            </div>
+            <input name="room_number" placeholder="Room Number" required>
+            <input name="capacity" type="number" placeholder="Capacity" required min="1">
+
+            <!-- Dynamic bunks for this new room -->
+            <div class="bunks" id="newBunkContainer0">
+                <input name="bunk_label" placeholder="New Bunk Label" required>
+            </div>
+            <button type="button" class="add-btn" onclick="addBunkInputNew(0)">+ Add Bunk</button>
+        </div>
+    </div>
+    <button type="button" class="add-btn" onclick="addRoom()">+ Add Room</button>
+    <button type="submit" class="submit-btn">Save All Rooms</button>
+</form>
+
+</div>
+
+<script>
+let roomIndex = 1;
+
+// Add new room dynamically
+function addRoom() {
+    const container = document.getElementById('roomContainer');
+    const roomDiv = document.createElement('div');
+    roomDiv.className = 'card room-box';
+    roomDiv.innerHTML = `
+        <div class="room-header">
+            <h4>New Room</h4>
+            <button type="button" class="remove-btn" onclick="removeRoom(this)">✖</button>
+        </div>
+        <input name="room_number" placeholder="Room Number" required>
+        <input name="capacity" type="number" placeholder="Capacity" required min="1">
+        <div class="bunks" id="newBunkContainer${roomIndex}">
+            <input name="bunk_label" placeholder="New Bunk Label" required>
+        </div>
+        <button type="button" class="add-btn" onclick="addBunkInputNew(${roomIndex})">+ Add Bunk</button>
+    `;
+    container.appendChild(roomDiv);
+    roomIndex++;
+}
+
+// Remove room dynamically
+function removeRoom(btn){
+    btn.closest('.room-box').remove();
+}
+
+// Add new bunk input for existing room
+function addBunkInput(roomId){
+    const container = document.getElementById('bunkContainer'+roomId);
+    const input = document.createElement('input');
+    input.name = 'bunk_label';
+    input.placeholder = 'Bunk Label';
+    input.required = true;
+    container.appendChild(input);
+}
+
+// Add new bunk input for newly added room
+function addBunkInputNew(index){
+    const container = document.getElementById('newBunkContainer'+index);
+    const input = document.createElement('input');
+    input.name = 'bunk_label';
+    input.placeholder = 'New Bunk Label';
+    input.required = true;
+    container.appendChild(input);
+}
+
+// Basic client-side validation
+document.querySelectorAll("form").forEach(form => {
+    form.addEventListener("submit", function(e){
+        let valid = true;
+        this.querySelectorAll("input").forEach(input=>{
+            if(!input.value.trim()) valid = false;
+        });
+        if(!valid){
+            alert("All fields are required");
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
+</body>
+</html>

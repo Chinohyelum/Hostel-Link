@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.env/
+
+# Database
+*.db
+*.sqlite3
+database.db
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Uploads (optional)
+static/uploads/
+
+# VS Code
+.vscode/

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='students/dashboard.css') }}">
+</head>
+
+<body>
+<div class="container">
+  <h2>Notifications</h2>
+
+  {% if notifications and notifications|length > 0 %}
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Details</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for n in notifications %}
+          <tr>
+            <td>
+              {% if n['decided_at'] %}
+                {{ n['decided_at']|datetimeformat }}
+              {% else %}
+                {{ n['created_at']|datetimeformat }}
+              {% endif %}
+            </td>
+
+            <td>
+              {% if n['type'] == 'cancellation' %}
+                Cancellation
+              {% else %}
+                Swap Request
+              {% endif %}
+            </td>
+
+            <td>
+              {% if n['type'] == 'cancellation' %}
+                Hostel: <strong>{{ n['hostel_name'] }}</strong><br>
+                Room: <strong>{{ n['room_number'] }}</strong>
+              {% else %}
+                From: <strong>{{ n['hostel_name'] }}</strong> (Room {{ n['room_number'] }})<br>
+                To: <strong>{{ n['requested_hostel_name'] }}</strong> (Room {{ n['requested_room_number'] }})
+                {% if n['requested_bunk_label'] %}
+                  <br>Bunk: <strong>{{ n['requested_bunk_label'] }}</strong>
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <td>
+              <span class="status {{ n['status'] }}">{{ n['status'] }}</span>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="flash">No notifications yet.</p>
+  {% endif %}
+
+  <div class="help-links" style="margin-top:12px;">
+    <a href="{{ url_for('student.dashboard') }}">Back to Dashboard</a>
+  </div>
+</div>
+</body>
+</html>
