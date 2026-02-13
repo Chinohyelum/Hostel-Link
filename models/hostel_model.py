@@ -12,7 +12,8 @@ def create_hostel_table():
         name TEXT NOT NULL,
         gender TEXT,
         faculty TEXT,
-        created_at INTEGER
+        created_at INTEGER,
+        image TEXT
     )
     """)
     db.commit()

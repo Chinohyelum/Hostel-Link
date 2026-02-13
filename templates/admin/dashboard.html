@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8" />
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 </head>
 <body>
 
-<div class="container">
+<!-- TOP NAVBAR (uses your existing elements/classes; does not change routes) -->
+<header class="navbar">
+    <div class="logo">🏨 HostelLink</div>
 
-    <!-- TOP ROW (no navbar) -->
-    <div class="dash-top">
-        <!-- Left: Hamburger -->
-        <button class="icon-btn" id="openSidebar" type="button" aria-label="Open menu">☰</button>
+    <!-- NOTE: Using your real Flask links. No new routes invented. -->
+    <nav class="nav">
+        <a class="nav-link nav-active" href="{{ url_for('dashboard.admin_dashboard') }}">Dashboard</a>
+        <a class="nav-link" href="{{ url_for('hostel.create_hostel') }}">Hostels</a>
+        <a class="nav-link" href="/admin/room-swap-requests">Room Swaps</a>
+        <a class="nav-link" href="/admin/cancellation-requests">Cancellations</a>
+        <a class="nav-link" href="/admin/notifications">Notifications</a>
+    </nav>
 
-        <!-- Middle/Right: Logout -->
+    <div class="user">
+        <!-- Keep hamburger functionality for mobile sidebar drawer -->
+        <!-- <button class="icon-btn" id="openSidebar" type="button" aria-label="Open menu">☰</button> -->
+
         <a class="logout-btn" href="/logout">Logout</a>
 
-
-        <!-- Right: Profile Icon -->
         <a class="profile-chip" href="{{ url_for('admin.admin_profile') }}" title="Edit Profile">
             {% if admin and admin['profile_picture'] %}
                 <img class="profile-avatar"
@@ -34,7 +42,9 @@
             {% endif %}
         </a>
     </div>
+</header>
 
+<main class="container">
     <!-- FLASH -->
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -42,20 +52,21 @@
       {% endif %}
     {% endwith %}
 
-    <!-- MAIN CONTENT -->
-    <div class="dash-hero card">
-        <div>
-            <h2 style="margin:0;">Welcome back{% if admin %}, {{ admin['first_name'] }}{% endif %} 👋</h2>
-            <p style="margin:8px 0 0; color:#666; font-weight:500;">
-                Manage hostels, rooms, bunks and handle student requests.
+    <!-- WELCOME / HERO -->
+    <section class="dash-hero card">
+        <div class="welcome">
+            <h2 style="margin:0;">Welcome back{% if admin %}, {{ admin['first_name'] }}{% endif %}</h2>
+            <p class="welcome-sub">
+                Your admin dashboard for hostel management. Quick access to all your tasks.
             </p>
         </div>
+
         <div class="hero-badges">
             <span class="pill">Hostels: <strong>{{ hostel_count }}</strong></span>
             <span class="pill">Room Swaps: <strong>{{ room_swap_pending }}</strong></span>
             <span class="pill">Cancellations: <strong>{{ cancel_pending }}</strong></span>
         </div>
-    </div>
+    </section>
 
     <!-- QUICK CARDS -->
     <section class="cards">
@@ -88,8 +99,18 @@
             <a class="action-btn" href="/admin/notifications">Notifications</a>
         </div>
     </section>
+</main>
 
-</div>
+<footer class="footer">
+    <div>
+        <p>© 2026 HostelLink. All rights reserved.</p>
+    </div>
+
+    <div class="split">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Services</a>
+    </div>
+</footer>
 
 <!-- SIDEBAR OVERLAY MENU (hidden by default) -->
 <div class="overlay" id="overlay"></div>
@@ -103,6 +124,8 @@
         <button class="icon-btn" id="closeSidebar" type="button" aria-label="Close menu">✕</button>
     </div>
 
+    <!-- We keep your nav commented if you want it later. This is still safe. -->
+    <!--
     <nav class="nav">
         <a class="nav-link" href="{{ url_for('dashboard.admin_dashboard') }}">Dashboard</a>
         <a class="nav-link" href="{{ url_for('hostel.create_hostel') }}">Create / Manage Hostels</a>
@@ -113,6 +136,7 @@
         <a class="nav-link" href="/admin/cancellation-requests">Cancellation Requests</a>
         <a class="nav-link" href="{{ url_for('admin.admin_profile') }}">Profile</a>
     </nav>
+    -->
 
     <a class="nav-link nav-link-danger" href="/logout">Logout</a>
 </aside>
@@ -140,6 +164,23 @@ overlay.addEventListener("click", closeSidebar);
 document.addEventListener("keydown", (e) => {
   if(e.key === "Escape") closeSidebar();
 });
+
+
+  const hostelInput = document.getElementById("hostel_image");
+  const preview = document.getElementById("hostelPreview");
+
+  if (hostelInput) {
+    hostelInput.addEventListener("change", () => {
+      const file = hostelInput.files && hostelInput.files[0];
+      if (!file) {
+        preview.style.display = "none";
+        preview.src = "";
+        return;
+      }
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    });
+  }
 </script>
 
 </body>

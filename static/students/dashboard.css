@@ -4,10 +4,23 @@
     --primary:#2563EB;
     --dark:#111827;
     --accent:#1E4ED8;
+
+    /* Keep your current white background default */
     --bg:#FFFFFF;
+
     --white:#fff;
     --border:#E2E8F0;
+
+    /* Added (safe): used for better UI polish */
+    --muted:#64748B;
+    --soft:#F8FAFC;
+    --ring: rgba(37,99,235,0.18);
+    --shadow-sm: 0 6px 14px rgba(0,0,0,0.06);
+    --shadow: 0 10px 24px rgba(2, 6, 23, 0.08);
 }
+
+/* ================== GLOBAL BASE ================== */
+*{ box-sizing:border-box; }
 
 body{
     font-family: 'Open Sans', sans-serif;
@@ -23,56 +36,68 @@ h2{
     margin-bottom:15px;
 }
 
+/* Keep container behavior but slightly better padding feel */
 .container{
     max-width:1100px;
     margin:auto;
 }
 
+/* Flash */
 .flash{
     background:#EFF6FF;
     border-left:5px solid var(--accent);
-    padding:10px;
-    margin:10px 0 20px;
-    border-radius:6px;
-    font-weight:600;
+    padding:12px 12px;
+    margin:12px 0 20px;
+    border-radius:10px;
+    font-weight:700;
+    box-shadow: var(--shadow-sm);
 }
 
+/* Forms */
 form{
     background:var(--white);
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 8px 18px rgba(0,0,0,0.06);
+    padding:22px;
+    border-radius:16px;
+    box-shadow:var(--shadow-sm);
     max-width:520px;
+    border:1px solid var(--border);
 }
 
+/* Inputs */
 input, select{
     width:100%;
     padding:12px;
     margin:10px 0;
-    border-radius:8px;
+    border-radius:12px;
     border:1px solid var(--border);
     outline:none;
     transition:.2s;
+    background:#fff;
 }
 
 input:focus, select:focus{
     border-color:var(--primary);
-    box-shadow:0 0 0 3px rgba(37,99,235,0.2);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.20);
 }
 
+/* Buttons */
 button{
     background:var(--primary);
     color:white;
     border:none;
     padding:12px 18px;
-    border-radius:8px;
+    border-radius:12px;
     cursor:pointer;
-    font-weight:600;
+    font-weight:700;
     transition:.2s;
+    box-shadow: 0 10px 18px rgba(37,99,235,0.18);
 }
-
 button:hover{
     background:var(--accent);
+    transform: translateY(-1px);
+}
+button:active{
+    transform: translateY(0px);
 }
 
 button.submit-btn{
@@ -84,8 +109,10 @@ button.submit-btn{
 button:disabled{
     opacity:.75;
     cursor:not-allowed;
+    transform:none;
 }
 
+/* Help links */
 .help-links{
     display:flex;
     gap:14px;
@@ -94,7 +121,7 @@ button:disabled{
 
 .help-links a{
     color:var(--dark);
-    font-weight:600;
+    font-weight:700;
     text-decoration:none;
 }
 
@@ -102,14 +129,15 @@ button:disabled{
     text-decoration:underline;
 }
 
-/* Tables (history page) */
+/* ================== TABLES (shared pages) ================== */
 table{
     width:100%;
     border-collapse:collapse;
     background:white;
-    border-radius:12px;
+    border-radius:16px;
     overflow:hidden;
-    box-shadow:0 10px 22px rgba(0,0,0,0.06);
+    box-shadow:var(--shadow-sm);
+    border:1px solid var(--border);
 }
 
 th{
@@ -117,11 +145,14 @@ th{
     color:white;
     padding:14px;
     text-align:left;
+    font-family:'Poppins', sans-serif;
+    letter-spacing:0.2px;
 }
 
 td{
-    padding:12px;
+    padding:12px 14px;
     border-bottom:1px solid var(--border);
+    vertical-align: top;
 }
 
 tr:hover{
@@ -135,47 +166,55 @@ tr:hover{
 /* Status badges */
 .status{
     padding:6px 12px;
-    border-radius:20px;
+    border-radius:999px;
     font-size:13px;
-    font-weight:600;
+    font-weight:700;
     text-transform:capitalize;
+    display:inline-block;
+    border:1px solid transparent;
 }
 
 .status.active{
     background:#d4edda;
     color:#155724;
+    border-color:#c7e6cf;
 }
 
 .status.cancelled{
     background:#f8d7da;
     color:#721c24;
+    border-color:#f1bfc5;
 }
 
 .status.completed{
     background:#fff3cd;
     color:#856404;
+    border-color:#ffe8a1;
 }
 
+/* Responsive tables */
 @media(max-width:768px){
     body{ padding:20px; }
     table, thead, tbody, th, td, tr{ display:block; }
     th{ display:none; }
-    td{ border:none; }
+    td{ border:none; padding:12px 12px; }
     tr{
         margin-bottom:15px;
-        border-radius:12px;
-        box-shadow:0 6px 12px rgba(0,0,0,0.05);
+        border-radius:16px;
+        box-shadow:var(--shadow-sm);
         background:white;
+        border:1px solid var(--border);
+        overflow:hidden;
     }
 }
 
-
-/* ---------------- DASHBOARD LAYOUT ---------------- */
+/* ================== DASHBOARD LAYOUT ================== */
+/* Admin-like polish while keeping your same structure */
 
 .dash-topbar{
     background: var(--white);
-    border-radius: 14px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
     padding: 12px 14px;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -183,6 +222,7 @@ tr:hover{
     gap: 10px;
     max-width: 1100px;
     margin: 0 auto 18px;
+    border:1px solid var(--border);
 }
 
 .dash-left{
@@ -192,61 +232,83 @@ tr:hover{
 }
 
 .dash-brand{
-    font-weight:700;
+    font-weight:800;
     color: var(--dark);
+    font-family:'Poppins', sans-serif;
+    letter-spacing:0.2px;
 }
 
 .hamburger{
     width:44px;
     height:44px;
-    border-radius:12px;
+    border-radius:14px;
     border:1px solid var(--border);
     background:#fff;
     cursor:pointer;
     font-size:18px;
-    font-weight:700;
+    font-weight:900;
+    transition:.2s;
+    box-shadow:0 8px 18px rgba(0,0,0,0.06);
 }
 .hamburger:hover{
     border-color: var(--primary);
-    box-shadow:0 0 0 3px rgba(37,99,235,0.18);
+    box-shadow:0 0 0 3px var(--ring);
 }
 
+/* Keep center layout (even if nav is added later) */
 .dash-center{
     display:flex;
     justify-content:center;
+    gap:10px;
+    align-items:center;
 }
 
+/* Your existing logout-btn is used across pages; keep it strong */
 .logout-btn{
     display:inline-block;
     background: var(--dark);
     color: #fff;
     padding: 10px 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 800;
     transition: .2s;
+    border:1px solid rgba(17,24,39,0.2);
+    box-shadow:0 10px 18px rgba(2, 6, 23, 0.12);
 }
 .logout-btn:hover{
     background: var(--accent);
+    transform: translateY(-1px);
+}
+.logout-btn:active{
+    transform: translateY(0px);
 }
 
 .dash-right{
     display:flex;
     justify-content:flex-end;
+    gap:10px;
+    align-items:center;
 }
 
+/* Profile */
 .profile-icon{
     width:44px;
     height:44px;
     border-radius: 50%;
     overflow:hidden;
-    border:3px solid var(--primary);
+    border:2px solid #E0E7FF; /* softer ring, admin-like */
     display:flex;
     justify-content:center;
     align-items:center;
     background:#fff;
-    box-shadow:0 8px 18px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-sm);
     text-decoration:none;
+    transition:.2s;
+}
+.profile-icon:hover{
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
 }
 .profile-icon img{
     width:100%;
@@ -257,6 +319,47 @@ tr:hover{
     font-size:20px;
 }
 
+/* -------- Notification Bell -------- */
+.notif-icon{
+    position: relative;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:2px solid #E0E7FF;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    font-size:18px;
+    margin-right:0; /* safer when right group is flex with gap */
+    text-decoration:none;
+    color:var(--dark);
+    box-shadow: var(--shadow-sm);
+    transition:.2s;
+}
+
+.notif-icon:hover{
+    background:#EFF6FF;
+    transform: translateY(-1px);
+}
+
+/* Badge */
+.notif-badge{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    background:var(--accent);
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    border-radius:999px;
+    padding:4px 6px;
+    min-width:18px;
+    text-align:center;
+    box-shadow:0 6px 12px rgba(0,0,0,0.18);
+    border:2px solid #fff;
+}
+
 /* Sidebar */
 .dash-sidebar{
     position: fixed;
@@ -265,10 +368,11 @@ tr:hover{
     width: 300px;
     height: 100vh;
     background: var(--white);
-    box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+    box-shadow: 0 18px 40px rgba(2, 6, 23, 0.20);
     padding: 14px;
     z-index: 1000;
     transition: left .25s ease;
+    border-right:1px solid var(--border);
 }
 .dash-sidebar.open{
     left: 0;
@@ -279,26 +383,31 @@ tr:hover{
     justify-content:space-between;
     align-items:center;
     margin-bottom: 10px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--border);
 }
 .sidebar-header h3{
     margin:0;
     color: var(--dark);
+    font-family:'Poppins', sans-serif;
 }
 
 .sidebar-close{
     width:40px;
     height:40px;
-    border-radius:12px;
+    border-radius:14px;
     border:1px solid var(--border);
     background:#fff;
     cursor:pointer;
     font-weight:900;
+    transition:.2s;
 }
 .sidebar-close:hover{
     border-color: var(--primary);
-    box-shadow:0 0 0 3px rgba(37,99,235,0.18);
+    box-shadow:0 0 0 3px var(--ring);
 }
 
+/* Sidebar links (kept as-is) */
 .sidebar-links{
     display:flex;
     flex-direction:column;
@@ -307,10 +416,10 @@ tr:hover{
 }
 .sidebar-links a{
     text-decoration:none;
-    font-weight:700;
+    font-weight:800;
     color: var(--dark);
     padding: 10px 12px;
-    border-radius: 12px;
+    border-radius: 14px;
     border:1px solid var(--border);
     background:#F8FAFC;
     transition:.2s;
@@ -318,13 +427,14 @@ tr:hover{
 .sidebar-links a:hover{
     border-color: var(--primary);
     transform: translateX(3px);
+    background:#EFF6FF;
 }
 
 /* Overlay */
 .dash-overlay{
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.20);
+    background: rgba(15,23,42,0.45);
     opacity: 0;
     pointer-events: none;
     z-index: 999;
@@ -341,6 +451,13 @@ tr:hover{
     margin: 0 auto;
 }
 
+/* Upgrade the welcome area (no new class required) */
+.dash-main h2{
+    margin-top: 6px;
+    margin-bottom: 10px;
+}
+
+/* Cards grid */
 .dash-cards{
     display:grid;
     grid-template-columns: repeat(4, 1fr);
@@ -348,27 +465,49 @@ tr:hover{
     margin-top: 14px;
 }
 
+/* Dashboard cards – make richer but keep your feel */
 .dash-card{
     background: var(--white);
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 16px;
+    padding: 18px;
     text-decoration:none;
     color:#111827;
     border:1px solid var(--border);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+    box-shadow: var(--shadow-sm);
     transition:.2s;
+    position: relative;
+    overflow:hidden;
 }
+
+/* Subtle top accent stripe (admin-like) */
+.dash-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    opacity:0.9;
+}
+
 .dash-card:hover{
     border-color: var(--primary);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
 }
+
 .dash-card h4{
     margin:0 0 8px;
     color: var(--dark);
+    font-family:'Poppins', sans-serif;
+    letter-spacing:0.2px;
 }
 .dash-card p{
     margin:0;
-    opacity:.85;
+    color: var(--muted);
+    font-weight:600;
+    line-height:1.4;
 }
 
 /* Responsive */
@@ -381,44 +520,88 @@ tr:hover{
         padding: 10px 12px;
     }
     .dash-cards{ grid-template-columns: 1fr; }
+
+    /* Keep the body padding comfortable on mobile */
+    body{ padding:18px; }
 }
 
+/* ================== OPTIONAL: NAV + FOOTER (safe additions) ==================
+   These classes may exist in some pages, and if not, they do nothing. */
 
-/* -------- Notification Bell -------- */
-
-.notif-icon{
-    position: relative;
-    width:44px;
-    height:44px;
-    border-radius:50%;
-    border:3px solid var(--primary);
+.dash-nav{
     display:flex;
+    gap:12px;
     align-items:center;
     justify-content:center;
-    background:#fff;
-    font-size:18px;
-    margin-right:10px;
+    flex-wrap:wrap;
+}
+
+.dash-navlink{
     text-decoration:none;
-    color:var(--dark);
-    box-shadow:0 8px 18px rgba(0,0,0,0.08);
+    color: var(--muted);
+    font-weight:800;
+    padding:8px 10px;
+    border-radius:12px;
+    transition:.2s;
+    border:1px solid transparent;
 }
-
-.notif-icon:hover{
+.dash-navlink:hover{
     background:#EFF6FF;
+    color: var(--dark);
+    border-color:#BFDBFE;
+}
+.dash-nav-active{
+    background:#EFF6FF;
+    color: var(--primary);
+    border-color:#BFDBFE;
 }
 
-/* Badge */
-.notif-badge{
-    position:absolute;
-    top:-6px;
-    right:-6px;
-    background:var(--accent);
-    color:#fff;
-    font-size:11px;
-    font-weight:700;
-    border-radius:50%;
-    padding:4px 6px;
-    min-width:18px;
+/* Optional sidebar logout button */
+.sidebar-logout{
+    margin-top:auto;
+    display:block;
+    text-decoration:none;
     text-align:center;
-    box-shadow:0 3px 6px rgba(0,0,0,0.2);
+    padding:12px 14px;
+    border-radius:14px;
+    background:#FEF2F2;
+    border:1px solid #FECACA;
+    color:#991B1B;
+    font-weight:900;
+    box-shadow: var(--shadow-sm);
+}
+.sidebar-logout:hover{
+    filter:brightness(0.98);
+}
+
+/* Optional footer */
+.dash-footer{
+    max-width:1100px;
+    margin:22px auto 0;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    box-shadow: var(--shadow-sm);
+}
+.dash-footer p{
+    margin:0;
+    color: var(--muted);
+    font-weight:700;
+}
+.dash-footer-split{
+    display:flex;
+    gap:14px;
+}
+.dash-footer-split a{
+    color: var(--muted);
+    font-weight:800;
+    text-decoration:none;
+}
+.dash-footer-split a:hover{
+    color: var(--dark);
 }

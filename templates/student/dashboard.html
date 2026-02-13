@@ -10,33 +10,35 @@
 
 <body>
 
-  <!-- TOP NAV -->
+  <!-- TOP NAV (Admin-like layout, but keeps your student classes/IDs) -->
   <header class="dash-topbar">
     <!-- LEFT: hamburger + brand -->
     <div class="dash-left">
       <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
         ☰
       </button>
-      <span class="dash-brand">HostelLink</span>
+      <span class="dash-brand">🏨 HostelLink</span>
     </div>
 
-    <!-- CENTER: logout -->
-    <div class="dash-center">
+    <!-- CENTER: quick links (optional UI upgrade; still uses your existing routes) -->
+    <nav class="dash-nav">
+      <a class="dash-navlink dash-nav-active" href="{{ url_for('student.dashboard') }}">Dashboard</a>
+      <a class="dash-navlink" href="{{ url_for('student.book_hostel_page') }}">Book Hostel</a>
+      <a class="dash-navlink" href="{{ url_for('student.booking_history') }}">History</a>
+      <a class="dash-navlink" href="{{ url_for('student.swap_request_page') }}">Swap</a>
+      <a class="dash-navlink" href="{{ url_for('student.cancel_booking_page') }}">Cancel</a>
+    </nav>
+
+    <!-- RIGHT: logout + notifications + profile -->
+    <div class="dash-right">
       <a class="logout-btn" href="{{ url_for('student.student_logout') }}">Logout</a>
 
-    </div>
-
-    <!-- RIGHT: profile icon -->
-    <div class="dash-right">
-
-        <a class="notif-icon" href="{{ url_for('student.notifications_page') }}" title="Notifications">
+      <a class="notif-icon" href="{{ url_for('student.notifications_page') }}" title="Notifications">
         🔔
-            {% if notification_count > 0 %}
-            <span class="notif-badge">{{ notification_count }}</span>
-            {% endif %}
-         </a>
-
-    <!-- Profile Icon -->
+        {% if notification_count > 0 %}
+          <span class="notif-badge">{{ notification_count }}</span>
+        {% endif %}
+      </a>
 
       <a class="profile-icon" href="{{ url_for('student.profile_page') }}" title="Edit Profile">
         {% if student and student['profile_pic'] %}
@@ -55,6 +57,7 @@
       <button class="sidebar-close" id="closeSidebarBtn" aria-label="Close menu">✕</button>
     </div>
 
+    <!-- Keeping your menu commented exactly as you had it (safe) -->
     <!-- <nav class="sidebar-links">
       <a href="{{ url_for('student.dashboard') }}">Dashboard</a>
       <a href="{{ url_for('student.book_hostel_page') }}">Book Hostel</a>
@@ -66,57 +69,80 @@
       <a href="{{ url_for('student.ratings_page') }}">Ratings</a>
       <a href="{{ url_for('student.profile_page') }}">Edit Profile</a>
     </nav> -->
+
+    <!-- Optional: add a visible logout at bottom like admin drawer (doesn't break anything) -->
+    <a class="sidebar-logout" href="{{ url_for('student.student_logout') }}">Logout</a>
   </aside>
 
   <!-- OVERLAY -->
   <div class="dash-overlay" id="overlay"></div>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN CONTENT (wrapped like admin container) -->
   <main class="dash-main">
-    <h2>Welcome{% if student and student['full_name'] %}, {{ student['full_name'] }}{% endif %} 👋</h2>
+    <div class="dash-container">
+      <section class="dash-hero">
+        <div class="dash-welcome">
+          <h2>Welcome{% if student and student['full_name'] %}, {{ student['full_name'] }}{% endif %} 👋</h2>
+          <p class="dash-sub">
+            Your student dashboard for hostel allocation, swaps, cancellations and updates.
+          </p>
+        </div>
+      </section>
 
-    <div class="dash-cards">
-      <a class="dash-card" href="{{ url_for('student.book_hostel_page') }}">
-        <h4>Book Hostel</h4>
-        <p>Choose hostel, room, and bunk.</p>
-      </a>
+      <div class="dash-cards">
+        <a class="dash-card" href="{{ url_for('student.book_hostel_page') }}">
+          <h4>Book Hostel</h4>
+          <p>Choose hostel, room, and bunk.</p>
+        </a>
 
-      <a class="dash-card" href="{{ url_for('student.booking_history') }}">
-        <h4>Booking History</h4>
-        <p>View your bookings and status.</p>
-      </a>
+        <a class="dash-card" href="{{ url_for('student.booking_history') }}">
+          <h4>Booking History</h4>
+          <p>View your bookings and status.</p>
+        </a>
 
-      <a class="dash-card" href="{{ url_for('student.cancel_booking_page') }}">
-        <h4>Cancellation</h4>
-        <p>Request cancellation & see approval status.</p>
-      </a>
+        <a class="dash-card" href="{{ url_for('student.cancel_booking_page') }}">
+          <h4>Cancellation</h4>
+          <p>Request cancellation & see approval status.</p>
+        </a>
 
-      <a class="dash-card" href="{{ url_for('student.swap_request_page') }}">
-        <h4>Room Swap</h4>
-        <p>Request a new room/bunk.</p>
-      </a>
+        <a class="dash-card" href="{{ url_for('student.swap_request_page') }}">
+          <h4>Room Swap</h4>
+          <p>Request a new room/bunk.</p>
+        </a>
 
-      <a class="dash-card" href="{{ url_for('student.roommates_page') }}">
-        <h4>Roommates</h4>
-        <p>See who shares your room.</p>
-      </a>
+        <a class="dash-card" href="{{ url_for('student.roommates_page') }}">
+          <h4>Roommates</h4>
+          <p>See who shares your room.</p>
+        </a>
 
-      <a class="dash-card" href="{{ url_for('student.hostel_card_page') }}">
-        <h4>Hostel Card</h4>
-        <p>Print your hostel allocation card.</p>
-      </a>
+        <a class="dash-card" href="{{ url_for('student.hostel_card_page') }}">
+          <h4>Hostel Card</h4>
+          <p>Print your hostel allocation card.</p>
+        </a>
 
-      <a class="dash-card" href="{{ url_for('student.ratings_page') }}">
-        <h4>Ratings</h4>
-        <p>Rate hostel/room and leave feedback.</p>
-      </a>
+        <a class="dash-card" href="{{ url_for('student.ratings_page') }}">
+          <h4>Ratings</h4>
+          <p>Rate hostel/room and leave feedback.</p>
+        </a>
 
-      <a class="dash-card" href="{{ url_for('student.profile_page') }}">
-        <h4>My Profile</h4>
-        <p>Update your name, email & picture.</p>
-      </a>
+        <a class="dash-card" href="{{ url_for('student.profile_page') }}">
+          <h4>My Profile</h4>
+          <p>Update your name, email & picture.</p>
+        </a>
+      </div>
     </div>
   </main>
+
+  <!-- Footer (admin-like) -->
+  <footer class="dash-footer">
+    <div>
+      <p>© 2026 HostelLink. All rights reserved.</p>
+    </div>
+    <div class="dash-footer-split">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Services</a>
+    </div>
+  </footer>
 
   <script>
     (function () {

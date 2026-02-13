@@ -16,14 +16,24 @@
 {% endif %}
 {% endwith %}
 
-<form id="createHostelForm" method="POST">
+<form id="createHostelForm" method="POST" enctype="multipart/form-data">
+    <label>Hostel Image</label>
+    <input type="file" name="hostel_image" id="hostel_image" accept="image/*">
+
+    <!-- Optional preview (safe UI improvement, no backend impact) -->
+    <img id="hostelPreview"
+         style="display:none; width:100%; max-width:360px; height:180px; object-fit:cover; border-radius:10px; margin-top:10px; border:1px solid #ddd;"
+         alt="Preview">
+
     <input type="text" name="name" placeholder="Hostel Name" required>
+
     <select name="gender" required>
         <option value="">Select Gender</option>
         <option value="male">Male</option>
         <option value="female">Female</option>
         <option value="mixed">Mixed</option>
     </select>
+
     <input type="text" name="faculty" placeholder="Faculty (optional)">
     <button type="submit">Create Hostel</button>
 </form>
@@ -33,14 +43,30 @@
 <h2>Existing Hostels</h2>
 <table>
 <tr>
+<th>Image</th>
 <th>Name</th>
 <th>Gender</th>
 <th>Faculty</th>
 <th>Free Bunks</th>
 <th>Actions</th>
 </tr>
+
 {% for hostel in hostels %}
 <tr>
+<td style="width:120px;">
+    {% if hostel.image %}
+        <img
+            src="{{ url_for('static', filename='uploads/hostels/' + hostel.image) }}"
+            alt="Hostel image"
+            style="width:110px; height:70px; object-fit:cover; border-radius:8px; border:1px solid #ddd;"
+        >
+    {% else %}
+        <div style="width:110px; height:70px; border-radius:8px; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center; font-size:12px; color:#777;">
+            No image
+        </div>
+    {% endif %}
+</td>
+
 <td>{{ hostel.name }}</td>
 <td>{{ hostel.gender | capitalize }}</td>
 <td>{{ hostel.faculty or 'All' }}</td>
@@ -63,6 +89,23 @@ document.getElementById("createHostelForm").addEventListener("submit", function(
         e.preventDefault();
     }
 });
+
+// Image preview (no backend impact)
+const hostelInput = document.getElementById("hostel_image");
+const preview = document.getElementById("hostelPreview");
+
+if (hostelInput) {
+    hostelInput.addEventListener("change", function(){
+        const file = this.files && this.files[0];
+        if (!file) {
+            preview.style.display = "none";
+            preview.src = "";
+            return;
+        }
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+    });
+}
 </script>
 
 </div>

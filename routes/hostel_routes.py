@@ -2,9 +2,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from extensions import get_db
 from routes.decorators import admin_login_required
 import time
+import os
+from werkzeug.utils import secure_filename
 
 hostel_bp = Blueprint("hostel", __name__)
 
+# ---------------- CREATE HOSTEL ----------------
 # ---------------- CREATE HOSTEL ----------------
 @hostel_bp.route("/admin/hostels", methods=["GET", "POST"])
 @admin_login_required
@@ -25,13 +28,44 @@ def create_hostel():
             flash("Please enter hostel name and select gender")
             return redirect(url_for("hostel.create_hostel"))
 
+        # ---- NEW: handle optional image upload ----
+        image_filename = None
+        file = request.files.get("hostel_image")
+
+        if file and file.filename:
+            if allowed_file(file.filename):
+                # Make filename unique to avoid overwriting
+                original = secure_filename(file.filename)
+                ext = original.rsplit(".", 1)[1].lower()
+                image_filename = f"{uuid4().hex}.{ext}"
+
+                upload_dir = os.path.join(current_app.static_folder, UPLOAD_SUBFOLDER)
+                os.makedirs(upload_dir, exist_ok=True)
+
+                save_path = os.path.join(upload_dir, image_filename)
+                file.save(save_path)
+            else:
+                flash("Invalid image type. Use png, jpg, jpeg, gif, or webp.")
+                return redirect(url_for("hostel.create_hostel"))
+
+        # ---- UPDATED INSERT: now includes image ----
         db.execute(
-            "INSERT INTO hostels (name, gender, faculty, created_at) VALUES (?,?,?,?)",
-            (name, gender, faculty, int(time.time()))
+            "INSERT INTO hostels (name, gender, faculty, image, created_at) VALUES (?,?,?,?,?)",
+            (name, gender, faculty, image_filename, int(time.time()))
         )
         db.commit()
+
         flash("Hostel created successfully!")
         return redirect(url_for("hostel.create_hostel"))
+
+    # (Keep your existing GET logic below exactly as you already have it)
+    # Example (only if you already do it):
+    # hostels = db.execute("SELECT * FROM hostels ORDER BY created_at DESC").fetchall()
+    # return render_template("create_hostel.html", hostels=hostels, ...)
+
+    # If your existing code already returns render_template here, leave it as-is.
+
+
 
     # Fetch hostels and number of free bunks for each
     hostels = db.execute("""
